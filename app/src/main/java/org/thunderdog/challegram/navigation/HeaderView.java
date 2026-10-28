@@ -1177,18 +1177,26 @@ public class HeaderView extends FrameLayoutFix implements View.OnClickListener, 
   public void setOverlayColor (int color) {
     if (this.overlayColor != color) {
       this.overlayColor = color;
-      setWillNotDraw(Color.alpha(color) <= 0);
+      setWillNotDraw(false) ;
       invalidate();
     }
   }
 
-  @Override
+    @Override
   public void draw (Canvas c) {
+    if (org.thunderdog.challegram.FloatingGlassUi.enableFloatingGlassUi) {
+      // 1. 绘制左圆返回键 + 中间标题胶囊 + 右圆菜单键的毛玻璃背景
+      org.thunderdog.challegram.FloatingGlassUi.drawFloatingHeader(c, getMeasuredWidth(), getCurrentHeaderOffset(), Screen.dp(56f));
+      // 2. 绘制顶栏里的图标、头像和文字（跳过原本的实心矩形背景）
+      dispatchDraw(c);
+      return;
+    }
     super.draw(c);
     if (Color.alpha(overlayColor) > 0) {
       c.drawRect(0, 0, getMeasuredWidth(), filling.getBottom(), Paints.fillingPaint(overlayColor));
     }
   }
+
 
   // Internal stuff
 
